@@ -1,4 +1,8 @@
 # Step 1 Load
+import os
+import openai
+openai.api_key = os.environ["OPENAI_API_KEY"]
+
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
@@ -6,12 +10,12 @@ from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 
-loader = PyPDFDirectoryLoader("pdf")
+loader = PyPDFDirectoryLoader("/Users/elahmedi/Downloads/grobid/ped-surg-ai/pdf")
 docs = loader.load()
 
 # Step 2 Split
 
-text_splitter = RecursiveCharacterTextSplitter(chunk_size = 10000, chunk_overlap = 200)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size = 4000, chunk_overlap = 200)
 all_splits = text_splitter.split_documents(docs)
 
 # Step 3 Store
@@ -34,7 +38,7 @@ docs = vectorstore.similarity_search(question)
 
 llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=0)
 qa_chain = RetrievalQA.from_chain_type(llm,retriever=vectorstore.as_retriever())
-print(qa_chain({"query": question},return_only_outputs=True))
+print(qa_chain({"query": question+" at the end of the answer, cite the referenced paper in Vancouver style. If unsure, say so."},return_only_outputs=True))
 
 # Step 6 Memory
 # Will be added in the future
