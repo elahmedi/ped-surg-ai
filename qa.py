@@ -34,8 +34,9 @@ print("SVM initialized successfully")
 # Step 3 Ask question
 while True:
     question = input("enter your question please: ")
-    creativity = input("On a scale of 0 to 1, how creative do you want the answer to be? Setting it to zero avoids hallucination")
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=creativity)
+    creativity = input("On a scale of 0 to 1, how creative do you want the answer to be? Setting it to zero avoids hallucination. ")
+    #llm = ChatOpenAI(model_name="gpt-3.5-turbo-16k", temperature=creativity)
+    llm = ChatOpenAI(model_name="gpt-4", temperature=creativity)
     docs=svm_retriever.get_relevant_documents(question)
     print("the number of relevant studies is ",len(docs))
     qa_chain = RetrievalQA.from_chain_type(llm,retriever=svm_retriever)
